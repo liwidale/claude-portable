@@ -1,0 +1,6 @@
+{
+  "cleanupPeriodDays": 3650,
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  }
+}

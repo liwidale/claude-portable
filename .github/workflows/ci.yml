@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: ShellCheck
+        run: shellcheck -x system/*.sh tests/*.sh "Claude for Mac.command"
+
+      - name: PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable PSScriptAnalyzer)) { Install-Module PSScriptAnalyzer -Force -Scope CurrentUser }
+          $results = foreach ($path in 'system', 'tests') {
+            Invoke-ScriptAnalyzer -Path $path -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+          }
+          $results | Format-Table -AutoSize
+          if ($results) { exit 1 }
+
+  smoke:
+    name: Smoke test (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            os: macos-latest
+            run: /bin/bash tests/smoke.sh
+          - name: Linux
+            os: ubuntu-latest
+            run: bash tests/smoke.sh
+          - name: Windows
+            os: windows-latest
+            run: powershell -NoProfile -ExecutionPolicy Bypass -File tests/smoke.ps1
+    steps:
+      - uses: actions/checkout@v5
+      - run: ${{ matrix.run }}

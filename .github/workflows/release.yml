@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build the ZIP
+        run: git archive --format=zip --prefix=ClaudePortable/ -o "claude-portable-${GITHUB_REF_NAME#v}.zip" "$GITHUB_REF_NAME"
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" claude-portable-*.zip --title "Claude Portable ${GITHUB_REF_NAME#v}" --generate-notes
