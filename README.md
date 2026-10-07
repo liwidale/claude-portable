@@ -310,3 +310,5 @@ Issues and pull requests are welcome.
 [MIT](LICENSE) © 2026 Liwidale
 
 Claude Portable is an independent community project. It is not made by, affiliated with or endorsed by Anthropic. Claude and Claude Code are trademarks of Anthropic. Claude Code itself is not part of this repository: the scripts download Anthropic's official builds, which are covered by [Anthropic's terms](https://www.anthropic.com/legal/consumer-terms).
+
+<p align="center"><sub>ゝ made by <a href="https://github.com/liwidale">liwidale</a></sub></p>
